@@ -10,7 +10,9 @@ import {
   HiOutlineScale,
 } from "react-icons/hi";
 
-const offers = [
+// NOTE: The API data does not currently include an "offers" section.
+// This component uses static data as a placeholder.
+const offersData = [
   {
     icon: <HiOutlineCurrencyDollar className="w-8 h-8" />,
     title: "CONVERT YOUR BIOMASS WASTE TO BRIQUETTE",
@@ -67,7 +69,8 @@ const itemVariants = {
   },
 };
 
-const Offers = () => {
+const Offers = ({ offers }) => {
+  // The 'offers' prop is passed but not used yet
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
@@ -99,7 +102,7 @@ const Offers = () => {
           animate={inView ? "visible" : "hidden"}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {offers.map((offer, index) => (
+          {offersData.map((offer, index) => (
             <motion.div
               key={index}
               variants={itemVariants}

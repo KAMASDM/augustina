@@ -1,52 +1,22 @@
-"use client"; 
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import axios from "axios";
 import {
   HiOutlineLightBulb,
   HiOutlineCog,
   HiOutlineRefresh,
 } from "react-icons/hi";
 
-const services = [
-  {
-    icon: <HiOutlineLightBulb className="w-8 h-8" />,
-    title: "Free Consultancy",
-    description:
-      "Expert guidance and analysis for your biomass projects with no upfront costs. Our team provides comprehensive evaluations and recommendations.",
-    features: [
-      "Initial assessment",
-      "Feasibility study",
-      "ROI analysis",
-      "Technical recommendations",
-    ],
-  },
-  {
-    icon: <HiOutlineCog className="w-8 h-8" />,
-    title: "Optimised Solutions",
-    description:
-      "We design and implement the most efficient solutions for your specific biomass waste processing needs.",
-    features: [
-      "Custom system design",
-      "Process optimization",
-      "Energy efficiency analysis",
-      "Production capacity planning",
-    ],
-  },
-  {
-    icon: <HiOutlineRefresh className="w-8 h-8" />,
-    title: "Project Revival",
-    description:
-      "Specialized services to modify and revive non-functional biomass projects, bringing them back to optimal performance.",
-    features: [
-      "System assessment",
-      "Equipment upgrade",
-      "Process optimization",
-      "Performance enhancement",
-    ],
-  },
-];
+// Helper object to map service slugs to their corresponding icons
+const serviceIcons = {
+  "free-consultancy": <HiOutlineLightBulb className="w-8 h-8" />,
+  "optimised-solutions": <HiOutlineCog className="w-8 h-8" />,
+  "project-revival": <HiOutlineRefresh className="w-8 h-8" />,
+};
 
+// This hardcoded data remains as the API doesn't provide it.
 const processSteps = [
   {
     number: "01",
@@ -73,7 +43,51 @@ const processSteps = [
       "Ongoing technical support and maintenance services to ensure optimal performance.",
   },
 ];
+
 const Services = () => {
+  const [servicesData, setServicesData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchServicesData = async () => {
+      try {
+        // NOTE: Using a placeholder API endpoint as the provided one was for the homepage.
+        // Replace with your actual services API endpoint.
+        const response = await axios.get(
+          "https://sweekarme.in/asiabio/api/services/" // Example endpoint
+        );
+
+        // Process the data to match the component's structure
+        const processedData = response.data.map((service) => {
+          const descriptionParts = service.description.split("\r\n\r\n");
+          const mainDescription = descriptionParts[0];
+          const features =
+            descriptionParts.length > 1
+              ? descriptionParts[1]
+                  .split("\r\n")
+                  .filter((line) => line.trim() !== "")
+              : [];
+
+          return {
+            ...service,
+            description: mainDescription,
+            features: features,
+          };
+        });
+
+        setServicesData(processedData);
+      } catch (err) {
+        console.error("Error fetching services data:", err);
+        setError("Failed to load services. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServicesData();
+  }, []);
+
   return (
     <div className="pt-20">
       <section className="relative bg-gradient-to-b from-primary-50 to-white py-20">
@@ -96,36 +110,44 @@ const Services = () => {
 
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 flex flex-col"
-              >
-                <div className="w-16 h-16 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 mb-6">
-                  {service.icon}
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 mb-6 flex-grow">
-                  {service.description}
-                </p>
-                <ul className="space-y-3">
-                  {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-center text-gray-700">
-                      <span className="w-2 h-2 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
+          {loading && (
+            <div className="text-center text-gray-600">Loading services...</div>
+          )}
+          {error && <div className="text-center text-red-500">{error}</div>}
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {servicesData.map((service, index) => (
+                <motion.div
+                  key={service.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.15 }}
+                  className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 flex flex-col"
+                >
+                  <div className="w-16 h-16 bg-primary-100 rounded-xl flex items-center justify-center text-primary-600 mb-6">
+                    {serviceIcons[service.slug] || (
+                      <HiOutlineLightBulb className="w-8 h-8" />
+                    )}
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 mb-6 flex-grow">
+                    {service.description}
+                  </p>
+                  <ul className="space-y-3">
+                    {service.features.map((feature, i) => (
+                      <li key={i} className="flex items-center text-gray-700">
+                        <span className="w-2 h-2 bg-primary-500 rounded-full mr-3 flex-shrink-0" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

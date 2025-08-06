@@ -5,21 +5,12 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 
+const clientLogos = {
+  "Adhyashakti Green Solutions":
+    "/assets/images/Adhyashakti Green Solutions.png",
+};
 
-const clients = [
-  {
-    name: "Daystar Pvt. Ltd",
-    logo: "/assets/images/Daystar Pvt. Ltd.png",
-  },
-  {
-    name: "Adhyashakti Green Solutions",
-    logo: "/assets/images/Adhyashakti Green Solutions.png",
-  },
-  {
-    name: "Ajil Biofuel Sdn. Bhd",
-    logo: "/assets/images/Ajil Biofuel.png",
-  },
-];
+const defaultLogo = "/assets/images/Daystar Pvt. Ltd.png"; // A default logo
 
 const stats = [
   { number: "15+", label: "Years Experience" },
@@ -49,11 +40,14 @@ const itemVariants = {
   },
 };
 
-const Clients = () => {
+const Clients = ({ clients: clientsData }) => {
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
   });
+
+  // Using testimonials as the source for client names
+  const clients = clientsData.testimonials || [];
 
   return (
     <section
@@ -89,22 +83,22 @@ const Clients = () => {
         >
           {clients.map((client, index) => (
             <motion.div
-              key={index}
+              key={client.id || index}
               variants={itemVariants}
               whileHover={{ scale: 1.05 }}
               className="bg-white rounded-xl shadow-lg overflow-hidden transition-shadow hover:shadow-xl p-8 text-center"
             >
               <div className="relative h-24 mb-6">
                 <Image
-                  src={client.logo}
-                  alt={`${client.name} logo`}
+                  src={ client.client_image} 
+                  alt={`${client.client_name} logo`}
                   fill
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {client.name}
+                {client.client_name}
               </h3>
               <div className="w-12 h-1 bg-primary-500 mx-auto rounded-full" />
             </motion.div>

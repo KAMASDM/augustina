@@ -13,6 +13,7 @@ const navMenu = [
   { name: "Products", path: "/products" },
   { name: "Services", path: "/services" },
   { name: "Contact Us", path: "/contact-us" },
+  { name: "Blogs", path: "/blogs" },
 ];
 
 const Header = () => {
@@ -42,11 +43,11 @@ const Header = () => {
                 <span>+91 9998835511</span>
               </a>
               <a
-                href="mailto:enquiry@augustina.in"
+                href="mailto:enquiry@Asia Biomass.in"
                 className="flex items-center hover:text-primary-200 transition-colors"
               >
                 <HiMail className="w-4 h-4 mr-2" />
-                <span>enquiry@augustina.in</span>
+                <span>enquiry@asiabiomass.in</span>
               </a>
             </div>
             <div className="flex items-center space-x-4 mt-2 sm:mt-0">
@@ -88,7 +89,7 @@ const Header = () => {
               >
                 <Image
                   src="/assets/images/logo.png"
-                  alt="Augustina"
+                  alt="Asia Biomass"
                   height={48}
                   width={120}
                   priority

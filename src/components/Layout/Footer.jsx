@@ -6,7 +6,7 @@ import { HiPhone, HiMail, HiLocationMarker, HiClock } from "react-icons/hi";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const companyName = "Augustina Tradelink Pvt Ltd";
+  const companyName = "Asia Biomass Tradelink Pvt Ltd";
   const companyAddress = {
     street: "415-A, Kapadia Compound, Vasta Devdi Road",
     city: "Katargam, Surat",
@@ -41,7 +41,7 @@ const Footer = () => {
               </p>
               <div className="flex space-x-4">
                 <a
-                  href="https://facebook.com/augustina"
+                  href="https://facebook.com/Asia Biomass"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow us on Facebook"
@@ -51,7 +51,7 @@ const Footer = () => {
                   <FaFacebook className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://twitter.com/augustina"
+                  href="https://twitter.com/Asia Biomass"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow us on Twitter"
@@ -61,7 +61,7 @@ const Footer = () => {
                   <FaTwitter className="w-6 h-6" />
                 </a>
                 <a
-                  href="https://linkedin.com/company/augustina"
+                  href="https://linkedin.com/company/Asia Biomass"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Follow us on LinkedIn"
@@ -162,12 +162,12 @@ const Footer = () => {
                 <div className="flex items-center space-x-3">
                   <HiMail className="w-5 h-5 text-primary-600" />
                   <a
-                    href="mailto:enquiry@augustina.in"
+                    href="mailto:enquiry@Asia Biomass.in"
                     className="text-gray-600 hover:text-primary-600 transition-colors"
                     itemProp="email"
-                    aria-label="Email us at enquiry@augustina.in"
+                    aria-label="Email us at enquiry@Asia Biomass.in"
                   >
-                    enquiry@augustina.in
+                    enquiry@Asia Biomass.in
                   </a>
                 </div>
                 <div className="flex items-center space-x-3">

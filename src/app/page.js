@@ -1,23 +1,17 @@
-import About from "@/components/Home/About";
-import Clients from "@/components/Home/Clients";
-import Hero from "@/components/Home/Hero";
-import Offers from "@/components/Home/Offers";
-import Services from "@/components/Home/Services";
-import Testimonials from "@/components/Home/Testimonials";
-
+import HomePage from "@/components/Home/HomePage"
 const homePageSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "Augustina Tradelink Pvt. Ltd.",
-  url: "https://augustina.in",
-  logo: "https://augustina.in/assets/images/logo.png",
+  name: "Asia Biomass Tradelink Pvt. Ltd.",
+  url: "https://asiabiomass.in",
+  logo: "https://AsiaBiomass.in/assets/images/logo.png",
   sameAs: [
-    "https://www.facebook.com/augustina",
-    "https://www.instagram.com/augustina",
-    "https://x.com/augustina",
+    "https://www.facebook.com/AsiaBiomass",
+    "https://www.instagram.com/AsiaBiomass",
+    "https://x.com/Asia Biomass",
   ],
   description:
-    "Augustina Tradelink is a leading provider of trade and logistics solutions for the global marketplace.",
+    "Asia Biomass Tradelink is a leading provider of trade and logistics solutions for the global marketplace.",
 };
 
 export default function Home() {
@@ -28,12 +22,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
       />
       <div className="overflow-hidden pt-20">
-        <Hero />
-        <About />
-        <Services />
-        <Offers />
-        <Testimonials />
-        <Clients />
+        <HomePage/>
       </div>
     </>
   );

@@ -1,6 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import axios from "axios";
 import {
   HiPhone,
   HiMail,
@@ -9,7 +10,6 @@ import {
   HiCheck,
   HiExclamationCircle,
 } from "react-icons/hi";
-import emailjs from "emailjs-com";
 
 const contactInfo = [
   {
@@ -17,19 +17,19 @@ const contactInfo = [
     title: "Address",
     content:
       "415-A, Kapadia Compound, Vasta Devdi Road, Katargam, Surat- 395004",
-    link: "https://maps.google.com/maps/dir//6R8P%2BCR+Patel+Nagar+Surat,+Gujarat/@21.2160625,72.8370625,19z/data=!4m5!4m4!1m0!1m2!1m1!1s0x3be04ee13b4bbd7b:0x42dbeece79eba542",
+    link: "https://www.google.com/maps/search/?api=1&query=415-A, Kapadia Compound, Vasta Devdi Road, Katargam, Surat- 395004",
   },
   {
     icon: <HiPhone className="w-6 h-6" />,
     title: "Phone",
     content: "+91 9998835511",
-    link: "tel:9998835511",
+    link: "tel:+919998835511",
   },
   {
     icon: <HiMail className="w-6 h-6" />,
     title: "Email",
-    content: "enquiry@augustina.in",
-    link: "mailto:enquiry@augustina.in",
+    content: "enquiry@asiabiomass.in",
+    link: "mailto:enquiry@asiabiomass.in",
   },
   {
     icon: <HiClock className="w-6 h-6" />,
@@ -40,13 +40,40 @@ const contactInfo = [
 ];
 
 const ContactUs = () => {
-  const [formStatus, setFormStatus] = useState("idle");
   const [formData, setFormData] = useState({
+    product: "",
+    service: "",
     name: "",
     email: "",
     phone: "",
     message: "",
   });
+  const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [formStatus, setFormStatus] = useState({ status: "idle", message: "" });
+
+  useEffect(() => {
+    const fetchDropdownData = async () => {
+      try {
+        const [productRes, serviceRes] = await Promise.all([
+          axios.get("https://sweekarme.in/asiabio/api/products/"),
+          axios.get("https://sweekarme.in/asiabio/api/services/"),
+        ]);
+        setProducts(productRes.data);
+        setServices(serviceRes.data);
+      } catch (err) {
+        console.error("Failed to fetch form options:", err);
+        setFormStatus({
+          status: "error",
+          message: "Could not load form options. Please refresh the page.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDropdownData();
+  }, []);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -55,24 +82,37 @@ const ContactUs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setFormStatus("submitting");
+    setFormStatus({ status: "submitting", message: "" });
 
-    const serviceID = process.env.EMAILJS_SERVICE_ID;
-    const templateID1 = process.env.EMAILJS_TEMPLATE_ID_1;
-    const templateID2 = process.env.EMAILJS_TEMPLATE_ID_2;
-    const userID = process.env.EMAILJS_USER_ID;
+    const submissionData = {
+      ...formData,
+      product: formData.product || null,
+      service: formData.service || null,
+    };
 
     try {
-      await Promise.all([
-        emailjs.send(serviceID, templateID1, formData, userID),
-        emailjs.send(serviceID, templateID2, formData, userID),
-      ]);
-
-      setFormStatus("success");
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      await axios.post(
+        "https://sweekarme.in/asiabio/api/contacts/enquiry/",
+        submissionData
+      );
+      setFormStatus({
+        status: "success",
+        message: "Enquiry sent successfully!",
+      });
+      setFormData({
+        product: "",
+        service: "",
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+      });
     } catch (error) {
-      console.error("Failed to send email:", error);
-      setFormStatus("error");
+      console.error("Failed to submit enquiry:", error);
+      setFormStatus({
+        status: "error",
+        message: "Failed to send enquiry. Please try again.",
+      });
     }
   };
 
@@ -108,12 +148,58 @@ const ContactUs = () => {
                 Send us a Message
               </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      htmlFor="product"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Product
+                    </label>
+                    <select
+                      id="product"
+                      value={formData.product}
+                      onChange={handleChange}
+                      disabled={loading}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                    >
+                      <option value="">Select a Product</option>
+                      {products.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="service"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                      Service
+                    </label>
+                    <select
+                      id="service"
+                      value={formData.service}
+                      onChange={handleChange}
+                      disabled={loading}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent disabled:bg-gray-100"
+                    >
+                      <option value="">Select a Service</option>
+                      {services.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
                 <div>
                   <label
                     htmlFor="name"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Full Name
+                    Full Name *
                   </label>
                   <input
                     type="text"
@@ -129,7 +215,7 @@ const ContactUs = () => {
                     htmlFor="email"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Email Address
+                    Email Address *
                   </label>
                   <input
                     type="email"
@@ -153,7 +239,6 @@ const ContactUs = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    required
                   />
                 </div>
                 <div>
@@ -161,7 +246,7 @@ const ContactUs = () => {
                     htmlFor="message"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    Message
+                    Message *
                   </label>
                   <textarea
                     id="message"
@@ -176,29 +261,30 @@ const ContactUs = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  disabled={formStatus === "submitting"}
+                  disabled={formStatus.status === "submitting" || loading}
                   className="w-full bg-primary-500 text-white py-3 rounded-lg hover:bg-primary-600 transition-colors disabled:opacity-50"
                 >
-                  {formStatus === "submitting" ? "Sending..." : "Send Message"}
+                  {formStatus.status === "submitting"
+                    ? "Sending..."
+                    : "Send Message"}
                 </motion.button>
-                {formStatus === "success" && (
+                {formStatus.status === "success" && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center text-green-600 bg-green-50 p-4 rounded-lg"
                   >
-                    <HiCheck className="w-5 h-5 mr-2" /> Message sent
-                    successfully!
+                    <HiCheck className="w-5 h-5 mr-2" /> {formStatus.message}
                   </motion.div>
                 )}
-                {formStatus === "error" && (
+                {formStatus.status === "error" && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center text-red-600 bg-red-50 p-4 rounded-lg"
                   >
-                    <HiExclamationCircle className="w-5 h-5 mr-2" /> Failed to
-                    send. Please try again.
+                    <HiExclamationCircle className="w-5 h-5 mr-2" />{" "}
+                    {formStatus.message}
                   </motion.div>
                 )}
               </form>
@@ -231,13 +317,13 @@ const ContactUs = () => {
               </div>
               <div className="bg-white rounded-2xl shadow-lg p-2 h-[300px]">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.4167873750644!2d72.83487531493444!3d21.216062585894343!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04ee13b4bbd7b%3A0x42dbeece79eba542!2sPatel%20Nagar%2C%20Surat%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1629790000000!5m2!1sen!2sin"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.485123539462!2d72.8225583153921!3d21.21255868731358!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04f5e6b492b77%3A0x6b158d63a43bf248!2sVasta%20Devdi%20Rd%2C%20Surat%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1662557438459!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0, borderRadius: "1rem" }}
                   allowFullScreen
                   loading="lazy"
-                  title="Augustina Tradelink Location Map"
+                  title="Company Location Map"
                   referrerPolicy="no-referrer-when-downgrade"
                 ></iframe>
               </div>

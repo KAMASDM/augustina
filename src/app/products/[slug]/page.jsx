@@ -1,108 +1,102 @@
 import React from "react";
-import { productData } from "@/lib/productData";
 import ProductDetail from "@/components/Products/ProductDetail";
+import axios from "axios";
+
+// Helper function to fetch a single product
+const getProduct = async (slug) => {
+  try {
+    const response = await axios.get(
+      `https://sweekarme.in/asiabio/api/products/${slug}/`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch product ${slug}:`, error);
+    return null;
+  }
+};
 
 export const generateMetadata = async ({ params }) => {
-  const resolvedParams = await params;
-  const slug = resolvedParams?.slug;
-
-  if (!slug) {
-    return {
-      title: "Product Not Found | Augustina Tradelink Pvt. Ltd.",
-      description: "The requested product was not found",
-    };
-  }
-
-  const product = productData.find((p) => p.slug === slug);
+  const product = await getProduct(params.slug);
 
   if (!product) {
     return {
-      title: "Product Not Found | Augustina Tradelink Pvt. Ltd.",
-      description: "The requested product was not found",
+      title: "Product Not Found | Asia Biomass Tradelink Pvt. Ltd.",
+      description: "The requested product could not be found.",
     };
   }
 
   return {
-    title: `${product.name} | Augustina Tradelink Pvt. Ltd.`,
-    description: product.description,
+    title: `${product.name} | Asia Biomass Tradelink Pvt. Ltd.`,
+    description: product.meta_description || product.description.split("\n")[0],
     alternates: {
       canonical: `/products/${product.slug}`,
     },
     openGraph: {
-      title: `${product.name} | Augustina Tradelink Pvt. Ltd.`,
-      description: product.description,
-      url: `https://augustina.in/products/${product.slug}`,
-      images: [
-        {
-          url: `https://augustina.in${product.image}`,
-          width: 800,
-          height: 600,
-          alt: product.name,
-        },
-      ],
-      siteName: "Augustina Tradelink Pvt. Ltd.",
+      title: `${product.name} | Asia Biomass Tradelink Pvt. Ltd.`,
+      description:
+        product.meta_description || product.description.split("\n")[0],
+      url: `https://Asia Biomass.in/products/${product.slug}`,
+      images: product.image
+        ? [
+            {
+              url: product.image,
+              width: 800,
+              height: 600,
+              alt: product.name,
+            },
+          ]
+        : [],
+      siteName: "Asia Biomass Tradelink Pvt. Ltd.",
       locale: "en_US",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | Augustina Tradelink Pvt. Ltd.`,
-      description: product.description,
-      images: [
-        {
-          url: `https://augustina.in${product.image}`,
-          width: 800,
-          height: 600,
-          alt: product.name,
-        },
-      ],
+      title: `${product.name} | Asia Biomass Tradelink Pvt. Ltd.`,
+      description:
+        product.meta_description || product.description.split("\n")[0],
+      images: product.image ? [product.image] : [],
     },
   };
 };
 
-const productDetailpage = async ({ params }) => {
-  const resolvedParams = await params;
-  const slug = resolvedParams?.slug;
-  const product = productData.find((p) => p.slug === slug);
+const ProductDetailPage = async ({ params }) => {
+  const product = await getProduct(params.slug);
+  if (!product) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h1 className="text-2xl font-bold">Product not found</h1>
+      </div>
+    );
+  }
 
   const getProductSchema = () => {
-    if (!product) return null;
-
     return {
       "@context": "https://schema.org",
       "@type": "Product",
       name: product.name,
       description: product.description,
-      image: `https://augustina.in${product.image}`,
       brand: {
         "@type": "Brand",
-        name: "Augustina Tradelink Pvt. Ltd.",
+        name: "Asia Biomass Tradelink Pvt. Ltd.",
       },
-      model: product.model,
-      category: product.category,
+      ...(product.model && { model: product.model }),
+      ...(product.category_name && { category: product.category_name }),
       offers: {
         "@type": "Offer",
-        url: `https://augustina.in/products/${product.slug}`,
-        priceCurrency: "INR",
+        url: `https://Asia Biomass.in/products/${product.slug}`,
+        priceCurrency: "INR", 
         availability: "https://schema.org/InStock",
       },
-      additionalProperty: [
-        {
-          "@type": "PropertyValue",
-          name: "Capacity",
-          value: product.specifications.capacity,
-        },
-        {
-          "@type": "PropertyValue",
-          name: "Power",
-          value: product.specifications.power,
-        },
-        {
-          "@type": "PropertyValue",
-          name: "Weight",
-          value: product.specifications.weight,
-        },
-      ],
+      ...(product.specifications && {
+        additionalProperty: Object.entries(product.specifications).map(
+          ([key, value]) => ({
+            "@type": "PropertyValue",
+            name: key.replace(/_/g, " "),
+            value: value,
+          })
+        ),
+      }),
     };
   };
 
@@ -110,15 +104,13 @@ const productDetailpage = async ({ params }) => {
 
   return (
     <>
-      {productSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <ProductDetail product={product} />
     </>
   );
 };
 
-export default productDetailpage;
+export default ProductDetailPage;

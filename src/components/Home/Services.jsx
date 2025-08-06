@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import React from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -11,41 +11,14 @@ import {
   FaWrench,
 } from "react-icons/fa";
 
-const services = [
-  {
-    icon: <FaLeaf className="w-8 h-8" />,
-    title: "Free Consultancy",
-    description:
-      "Expert guidance for your biomass projects with no upfront costs.",
-  },
-  {
-    icon: <FaRecycle className="w-8 h-8" />,
-    title: "Optimised Solutions",
-    description:
-      "Customized biomass solutions designed for maximum efficiency.",
-  },
-  {
-    icon: <FaCog className="w-8 h-8" />,
-    title: "Design & Engineering",
-    description: "Complete biomass equipment design and engineering services.",
-  },
-  {
-    icon: <FaTools className="w-8 h-8" />,
-    title: "Project Revival",
-    description: "Modification and revival of non-functional biomass projects.",
-  },
-  {
-    icon: <FaIndustry className="w-8 h-8" />,
-    title: "Customized Solutions",
-    description: "Tailored solutions for any type of biomass waste.",
-  },
-  {
-    icon: <FaWrench className="w-8 h-8" />,
-    title: "Installation & Commissioning",
-    description:
-      "Full-service installation and commissioning of biomass projects.",
-  },
-];
+const iconMap = {
+  "Free Consultancy": <FaLeaf className="w-8 h-8" />,
+  "Optimised Solutions": <FaRecycle className="w-8 h-8" />,
+  "Design & Engineering": <FaCog className="w-8 h-8" />,
+  "Project Revival": <FaTools className="w-8 h-8" />,
+  "Customized Solutions": <FaIndustry className="w-8 h-8" />,
+  "Installation & Commissioning": <FaWrench className="w-8 h-8" />,
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -67,11 +40,13 @@ const itemVariants = {
     },
   },
 };
-const Services = () => {
+const Services = ({ serviceData }) => {
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
   });
+
+  const services = serviceData.why_choose_us_items || [];
 
   return (
     <section className="py-20 bg-gradient-to-b from-white to-primary-50">
@@ -84,7 +59,7 @@ const Services = () => {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-4xl font-bold text-primary-600 mb-4"
           >
-            What We Do
+            {serviceData.why_choose_us_title || "What We Do"}
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -104,11 +79,13 @@ const Services = () => {
         >
           {services.map((service, index) => (
             <motion.div
-              key={index}
+              key={service.id || index}
               variants={itemVariants}
               className="bg-white p-8 rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col"
             >
-              <div className="text-primary-500 mb-4">{service.icon}</div>
+              <div className="text-primary-500 mb-4">
+                {iconMap[service.title] || <FaCog className="w-8 h-8" />}
+              </div>
               <h3 className="text-xl font-semibold text-primary-600 mb-2">
                 {service.title}
               </h3>
