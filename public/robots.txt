@@ -3,8 +3,8 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://augustina.in
+Host: https://asiabiomass.in
 
 # Sitemaps
-Sitemap: https://augustina.in/sitemap.xml
-Sitemap: https://augustina.in/server-sitemap.xml
+Sitemap: https://asiabiomass.in/sitemap.xml
+Sitemap: https://asiabiomass.in/server-sitemap.xml

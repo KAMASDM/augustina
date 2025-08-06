@@ -44,7 +44,7 @@ const TermsAndConditions = () => {
             <Section title="2. Intellectual Property">
               <p>
                 The Site and its original content, features, and functionality
-                are owned by Augustina Tradelink Pvt. Ltd. and are protected by
+                are owned by Asia Biomass Tradelink Pvt. Ltd. and are protected by
                 international copyright, trademark, patent, trade secret, and
                 other intellectual property or proprietary rights laws. This
                 includes all text, graphics, logos, images, and software.
@@ -58,14 +58,14 @@ const TermsAndConditions = () => {
                 Site for any unlawful purpose or any purpose prohibited under
                 this clause. You agree not to use the Site in any way that could
                 damage the Site, the services, or the general business of
-                Augustina Tradelink Pvt. Ltd.
+                Asia Biomass Tradelink Pvt. Ltd.
               </p>
             </Section>
 
             <Section title="4. Disclaimer of Warranties">
               <p>
                 This Site is provided on an "as is" and "as available" basis.
-                Augustina Tradelink Pvt. Ltd. makes no representations or
+                Asia Biomass Tradelink Pvt. Ltd. makes no representations or
                 warranties of any kind, express or implied, as to the operation
                 of the Site or the information, content, materials, or products
                 included on this Site. You expressly agree that your use of this
@@ -75,7 +75,7 @@ const TermsAndConditions = () => {
 
             <Section title="5. Limitation of Liability">
               <p>
-                In no event shall Augustina Tradelink Pvt. Ltd., nor its
+                In no event shall Asia Biomass Tradelink Pvt. Ltd., nor its
                 directors, employees, partners, agents, suppliers, or
                 affiliates, be liable for any indirect, incidental, special,
                 consequential or punitive damages, including without limitation,

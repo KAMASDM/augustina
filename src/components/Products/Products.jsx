@@ -2,10 +2,49 @@
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { productData } from "@/lib/productData";
 import { HiChevronRight, HiOutlineInformationCircle } from "react-icons/hi";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(
+          "https://sweekarme.in/asiabio/api/products/"
+        );
+        setProducts(response.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError("Failed to load products. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl">Loading products...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-xl text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-20">
       <section className="relative bg-gradient-to-b from-primary-50 to-white py-20">
@@ -29,7 +68,7 @@ const Products = () => {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {productData.map((product, index) => (
+            {products.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -40,7 +79,7 @@ const Products = () => {
               >
                 <div className="relative w-full h-64 flex-shrink-0">
                   <Image
-                    src={product.image}
+                    src={product.image} // Fallback image
                     alt={`Image of our ${product.name}`}
                     fill
                     className="object-cover transform group-hover:scale-110 transition-transform duration-500"
@@ -58,12 +97,16 @@ const Products = () => {
                   </p>
 
                   <div className="space-y-2 mb-6 flex-grow">
-                    {product.highlights.map((highlight, i) => (
-                      <div key={i} className="flex items-start text-gray-700">
-                        <HiChevronRight className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
-                        <span className="ml-2 line-clamp-1">{highlight}</span>
-                      </div>
-                    ))}
+                    {/* Assuming highlights can be derived from description */}
+                    {product.description
+                      .split("\n")
+                      .slice(1, 4)
+                      .map((highlight, i) => (
+                        <div key={i} className="flex items-start text-gray-700">
+                          <HiChevronRight className="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" />
+                          <span className="ml-2 line-clamp-1">{highlight}</span>
+                        </div>
+                      ))}
                   </div>
 
                   <div className="flex space-x-4 mt-auto">

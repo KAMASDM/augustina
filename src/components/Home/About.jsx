@@ -22,7 +22,7 @@ const stats = [
   { number: "20M", label: "Tonnes Target" },
 ];
 
-const About = () => {
+const About = ({ aboutData }) => {
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
@@ -41,19 +41,15 @@ const About = () => {
             variants={fadeInUp}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-primary-600 mb-6">
-              15-YEARS OF SUSTAINABLE & INNOVATIVE TECHNOLOGIES
+              {aboutData.welcome_title 
+                }
             </h2>
-            <p className="text-gray-600 mb-6">
-              Augustina Tradelink Pvt. Ltd is engaged in engineering, designing,
-              fabricating, and supplying renewable technologies to convert
-              biomass waste into combustible fuel and gases.
-            </p>
-            <p className="text-gray-600 mb-6">
-              Having strong teamwork and in-depth research, we have created new
-              concepts and means to treat biomass waste. Our innovative and
-              power-efficient systems help in generating briquettes, pellets,
-              power, and combustible gases.
-            </p>
+            <div
+              className="text-gray-600 mb-6 space-y-4"
+              dangerouslySetInnerHTML={{
+                __html: aboutData.welcome_content || "",
+              }}
+            />
 
             <motion.div
               className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12"
@@ -88,7 +84,9 @@ const About = () => {
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl w-full h-full">
               <Image
-                src="/assets/images/SUSTAINABLE.png" 
+                src={
+                  aboutData.welcome_image || "/assets/images/SUSTAINABLE.png"
+                }
                 alt="A graphic illustrating sustainable technology with green leaves and energy icons, representing our mission."
                 fill
                 className="object-cover"

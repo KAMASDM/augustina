@@ -31,7 +31,7 @@ const PrivacyPolicy = () => {
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
             <Section title="1. Introduction">
               <p>
-                Welcome to Augustina Tradelink Pvt. Ltd. ("we," "our," or "us").
+                Welcome to Asia Biomass Tradelink Pvt. Ltd. ("we," "our," or "us").
                 We are committed to protecting your privacy. This Privacy Policy
                 explains how we collect, use, disclose, and safeguard your
                 information when you visit our website. Please read this policy
@@ -120,17 +120,17 @@ const PrivacyPolicy = () => {
                 please contact us at:
               </p>
               <p>
-                <strong>Augustina Tradelink Pvt. Ltd.</strong>
+                <strong>Asia Biomass Tradelink Pvt. Ltd.</strong>
                 <br />
                 415-A, Kapadia Compound, Vasta Devdi Road, Katargam, Surat-
                 395004
                 <br />
                 Email:{" "}
                 <a
-                  href="mailto:enquiry@augustina.in"
+                  href="mailto:enquiry@Asia Biomass.in"
                   className="text-primary-600 hover:underline"
                 >
-                  enquiry@augustina.in
+                  enquiry@Asia Biomass.in
                 </a>
               </p>
             </Section>

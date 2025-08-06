@@ -51,7 +51,7 @@ const itemVariants = {
   },
 };
 
-const Hero = () => {
+const Hero = ({ heroData }) => {
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary-50 via-white to-secondary-50" />
@@ -86,26 +86,24 @@ const Hero = () => {
         >
           <div>
             <motion.div variants={itemVariants}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Innovative Solutions for a{" "}
-                <span className="text-primary-600">Green Future</span>
-              </h1>
+              <h1
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight"
+                dangerouslySetInnerHTML={{ __html: heroData.hero_title }}
+              />
             </motion.div>
 
-            <motion.p
+            <motion.div
               variants={itemVariants}
               className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl"
-            >
-              15 years of sustainable & innovative technologies converting
-              biomass waste into valuable renewable energy solutions.
-            </motion.p>
+              dangerouslySetInnerHTML={{ __html: heroData.hero_subtitle }}
+            />
 
             <motion.div
               variants={itemVariants}
               className="mt-8 flex flex-wrap gap-4"
             >
               <Link
-                href="/contact-us"
+                href={heroData.hero_cta_link || "/contact-us"}
                 aria-label="Get started with our green energy solutions"
               >
                 <motion.button
@@ -168,7 +166,7 @@ const Hero = () => {
                 className="absolute inset-0"
               >
                 <Image
-                  src="/assets/images/aboutUs.jpeg"
+                  src={heroData.hero_image || "/assets/images/aboutUs.jpeg"}
                   alt="Modern biomass energy facility with processing machinery under a clear sky, symbolizing a green future."
                   fill
                   className="object-cover rounded-2xl shadow-2xl"
