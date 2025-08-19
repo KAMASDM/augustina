@@ -1,5 +1,6 @@
 import React from "react";
 import Products from "@/components/Products/Products";
+import CalculatorApp from "@/components/Calculator/CalculatorApp";
 
 export const metadata = {
   title: "Our Products | Asia Biomass Tradelink Pvt. Ltd.",
@@ -44,7 +45,12 @@ export const metadata = {
 };
 
 const productsPage = () => {
-  return <Products />;
+  return (
+    <>
+      <Products />
+      <CalculatorApp />
+    </>
+  );
 };
 
 export default productsPage;
