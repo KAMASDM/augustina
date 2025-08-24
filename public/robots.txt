@@ -1,10 +1,11 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api
 
 # Host
-Host: https://asiabiomass.in
+Host: https://sweekarme.in/asiabio
 
 # Sitemaps
-Sitemap: https://asiabiomass.in/sitemap.xml
-Sitemap: https://asiabiomass.in/server-sitemap.xml
+Sitemap: https://sweekarme.in/asiabio/sitemap.xml
