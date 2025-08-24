@@ -87,3 +87,39 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.calculator-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (max-width: 640px) {
+  .calculator-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .calculator-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .calculator-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1281px) and (max-width: 1536px) {
+  .calculator-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1537px) {
+  .calculator-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}

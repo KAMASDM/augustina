@@ -1,3 +1,4 @@
+// src/components/AboutUs/AboutUs.jsx
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -85,7 +86,7 @@ const AboutUsContent = ({ aboutData }) => {
               <Image
                 src={
                   aboutData.intro_image
-                    ? aboutData.intro_image
+                    ? `https://sweekarme.in${aboutData.intro_image}`
                     : "/assets/images/story-placeholder.jpg"
                 }
                 alt="Our company's journey"
@@ -215,13 +216,13 @@ const AboutUsContent = ({ aboutData }) => {
                   >
                     <div className="relative w-32 h-32 mb-4">
                       <Image
-                        // FIX: Use ternary operator to prevent passing empty strings
-                        // src={
-                        //   member.image
-                        //     ? member.image
-                        //     : "https://placehold.co/200x200/d1fae5/166534?text=" +
-                        //       member.name.charAt(0)
-                        // }
+                        src={
+                          member.image
+                            ? `https://sweekarme.in${member.image}`
+                            : `https://placehold.co/200x200/d1fae5/166534?text=${member.name.charAt(
+                                0
+                              )}`
+                        }
                         alt={member.name}
                         fill
                         className="rounded-full object-cover"

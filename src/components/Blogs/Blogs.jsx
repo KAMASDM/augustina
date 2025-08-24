@@ -92,8 +92,10 @@ const Blogs = () => {
                   <div className="relative w-full h-56 flex-shrink-0">
                     <Image
                       src={
-                        blog.featured_image || "/assets/images/placeholder.png"
-                      } // Fallback image
+                        (blog.featured_image && blog.featured_image !== null) 
+                          ? blog.featured_image 
+                          : "/assets/images/placeholder.png"
+                      }
                       alt={`Featured image for ${blog.title}`}
                       fill
                       className="object-cover transform group-hover:scale-110 transition-transform duration-500"
@@ -105,11 +107,11 @@ const Blogs = () => {
 
                 <div className="p-6 flex flex-col flex-grow">
                   <p className="text-sm text-primary-600 font-medium mb-2">
-                    {blog.category.name}
+                    {blog.category?.name || "Uncategorized"}
                   </p>
                   <h3 className="text-xl font-bold text-gray-900 mb-3 flex-grow line-clamp-2">
                     <Link
-                      href=""
+                      href={`/blogs/${blog.slug}`}
                       passHref
                       className="hover:text-primary-600 transition-colors"
                     >
@@ -122,7 +124,7 @@ const Blogs = () => {
 
                   <div className="mt-auto pt-4 border-t border-neutral-100">
                     <Link
-                      href=""
+                      href={`/blogs/${blog.slug}`}
                       passHref
                       className="inline-flex items-center font-semibold text-primary-500 hover:text-primary-600"
                     >

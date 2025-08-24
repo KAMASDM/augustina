@@ -1,3 +1,4 @@
+// src/components/Home/About.jsx
 "use client";
 import React from "react";
 import Image from "next/image";
@@ -84,9 +85,7 @@ const About = ({ aboutData }) => {
           >
             <div className="rounded-2xl overflow-hidden shadow-2xl w-full h-full">
               <Image
-                src={
-                  aboutData.welcome_image || "/assets/images/SUSTAINABLE.png"
-                }
+                src={`https://sweekarme.in${aboutData.welcome_image}`}
                 alt="A graphic illustrating sustainable technology with green leaves and energy icons, representing our mission."
                 fill
                 className="object-cover"

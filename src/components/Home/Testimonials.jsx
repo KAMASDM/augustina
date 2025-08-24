@@ -1,3 +1,4 @@
+// src/components/Home/Testimonials.jsx
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
@@ -26,7 +27,9 @@ const Testimonials = ({ testimonials: testimonialsData }) => {
 
   const nextTestimonial = () => {
     if (testimonials.length > 1) {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+      setCurrentIndex(
+        (prev) => (prev - 1 + testimonials.length) % testimonials.length
+      );
     }
   };
 
@@ -82,7 +85,9 @@ const Testimonials = ({ testimonials: testimonialsData }) => {
                       <div className="w-24 h-24 md:w-32 md:h-32 relative">
                         <Image
                           src={
-                            defaultLogo
+                            currentTestimonial.client_image
+                            ? `https://sweekarme.in${currentTestimonial.client_image}`
+                            : defaultLogo
                           }
                           alt={`Profile picture of ${currentTestimonial.client_name}`}
                           fill

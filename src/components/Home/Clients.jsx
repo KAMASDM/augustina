@@ -1,3 +1,4 @@
+// src/components/Home/Clients.jsx
 "use client";
 import React from "react";
 import Link from "next/link";
@@ -90,7 +91,7 @@ const Clients = ({ clients: clientsData }) => {
             >
               <div className="relative h-24 mb-6">
                 <Image
-                  src={ client.client_image} 
+                  src={`https://sweekarme.in${client.client_image}`}
                   alt={`${client.client_name} logo`}
                   fill
                   className="object-contain"

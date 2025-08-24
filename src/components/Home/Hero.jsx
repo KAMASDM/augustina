@@ -1,3 +1,4 @@
+// src/components/Home/Hero.jsx
 "use client";
 import React from "react";
 import Link from "next/link";
@@ -166,7 +167,7 @@ const Hero = ({ heroData }) => {
                 className="absolute inset-0"
               >
                 <Image
-                  src={heroData.hero_image || "/assets/images/aboutUs.jpeg"}
+                  src={`https://sweekarme.in${heroData.hero_image}`}
                   alt="Modern biomass energy facility with processing machinery under a clear sky, symbolizing a green future."
                   fill
                   className="object-cover rounded-2xl shadow-2xl"
@@ -185,12 +186,7 @@ const Hero = ({ heroData }) => {
                   <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
                     <HiOutlineLightBulb className="w-6 h-6 text-primary-600" />
                   </div>
-                  <div>
-                    <h4 className="font-semibold">Innovative Solutions</h4>
-                    <p className="text-sm text-gray-600">
-                      Converting biomass waste into value
-                    </p>
-                  </div>
+                 
                 </div>
               </motion.div>
 

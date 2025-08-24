@@ -1,3 +1,4 @@
+// src/components/Calculator/CalculatorApp.jsx
 "use client";
 
 import React, { useState, useMemo } from "react";
@@ -587,31 +588,6 @@ function Calculator({ initialMachineData, title, color }) {
     margin: 0,
   };
 
-  const gridStyle = {
-    display: "grid",
-    gap: "16px",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-  };
-
-  const responsiveGridStyle = {
-    ...gridStyle,
-    "@media (max-width: 640px)": {
-      gridTemplateColumns: "1fr",
-    },
-    "@media (min-width: 641px) and (max-width: 1024px)": {
-      gridTemplateColumns: "repeat(2, 1fr)",
-    },
-    "@media (min-width: 1025px) and (max-width: 1280px)": {
-      gridTemplateColumns: "repeat(3, 1fr)",
-    },
-    "@media (min-width: 1281px) and (max-width: 1536px)": {
-      gridTemplateColumns: "repeat(4, 1fr)",
-    },
-    "@media (min-width: 1537px)": {
-      gridTemplateColumns: "repeat(5, 1fr)",
-    },
-  };
-
   return (
     <div style={containerStyle}>
       {/* Sticky Wrapper for Totals Card */}
@@ -626,7 +602,7 @@ function Calculator({ initialMachineData, title, color }) {
         </p>
       </div>
 
-      <div style={responsiveGridStyle}>
+      <div className="calculator-grid">
         {machines.map((machine) => (
           <MachineCard
             key={machine.id}
@@ -644,7 +620,6 @@ export default function CalculatorApp() {
   const activeCalculator = calculatorTabs[activeTab];
 
   const appStyle = {
-    minHeight: "100vh",
     backgroundColor: "#f9fafb",
     fontFamily: "Arial, sans-serif",
   };
