@@ -90,8 +90,8 @@ const Header = () => {
                 <Image
                   src="/assets/images/logo.png"
                   alt="Asia Biomass"
-                  height={48}
-                  width={120}
+                  height={100}
+                  width={180}
                   priority
                 />
               </motion.div>
