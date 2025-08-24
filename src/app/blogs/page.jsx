@@ -14,10 +14,10 @@ export const metadata = {
     title: "Our Blog | Asia Biomass Tradelink Pvt. Ltd.",
     description:
       "Insights, news, and articles on biomass processing technology and sustainability.",
-    url: "https://asiabiomass.in/blogs", // Changed from Asia Biomass.in to asiabiomass.in
+    url: "https://asiabiomass.in/blogs",
     images: [
       {
-        url: "https://asiabiomass.in/assets/images/logo.png", // Changed from Asia Biomass.in to asiabiomass.in
+        url: "https://asiabiomass.in/assets/images/logo.png",
         width: 800,
         height: 600,
         alt: "Asia Biomass Tradelink Pvt. Ltd. Blog",
@@ -32,7 +32,7 @@ export const metadata = {
     title: "Our Blog | Asia Biomass Tradelink Pvt. Ltd.",
     description:
       "Insights, news, and articles on biomass processing technology and sustainability.",
-    images: ["https://asiabiomass.in/assets/images/logo.png"], // Changed from Asia Biomass.in to asiabiomass.in
+    images: ["https://asiabiomass.in/assets/images/logo.png"],
   },
 };
 
