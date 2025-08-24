@@ -1,232 +1,146 @@
-// src/app/blogs/[slug]/page.jsx
+// src/app/blogs/[slug]/page.jsx (Client-side fallback version)
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import axios from 'axios';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import BlogDetail from "@/components/Blogs/BlogDetail";
-import { notFound } from 'next/navigation';
 
-async function getBlog(slug) {
-  try {
-    // Validate slug before API call
-    if (!slug || slug.length > 100 || !/^[a-z0-9\-]+$/.test(slug)) {
-      console.error('Invalid slug format:', slug);
-      return null;
-    }
+export default function BlogPage() {
+  const params = useParams();
+  const [blog, setBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    console.log('Fetching blog with slug:', slug);
-    
-    const response = await fetch(`https://sweekarme.in/asiabio/api/blogs/${slug}/`, {
-      next: { revalidate: 3600 },
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; NextJS/13.0)',
-        'Accept': 'application/json',
-      },
-    });
-    
-    console.log('API Response status:', response.status);
-    
-    if (!response.ok) {
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      
-      // Handle specific error codes
-      if (response.status === 404) {
-        console.log('Blog not found in API');
-        return null;
+  useEffect(() => {
+    // Set a default title while loading
+    document.title = 'Loading Blog Post... | Asia Biomass Tradelink Pvt. Ltd.';
+
+    const fetchBlog = async () => {
+      // Handle slug, which can be a string or an array for catch-all routes
+      let slug = params.slug;
+      if (Array.isArray(slug)) {
+        slug = slug.join('/'); // Join if it's a catch-all route
       }
       
-      if (response.status >= 500) {
-        console.error('Server error, retrying...');
-        // Retry once for server errors
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        const retryResponse = await fetch(`https://sweekarme.in/asiabio/api/blogs/${slug}/`);
-        if (!retryResponse.ok) {
-          return null;
-        }
-        const retryData = await retryResponse.json();
-        return retryData;
+      if (!slug) {
+        setError('No blog slug provided');
+        setLoading(false);
+        document.title = 'Error | Asia Biomass Tradelink Pvt. Ltd.';
+        return;
       }
-      
-      return null;
-    }
-    
-    const data = await response.json();
-    console.log('Blog data fetched successfully:', data?.title || 'No title');
-    
-    // Validate the returned data
-    if (!data || !data.title || !data.slug) {
-      console.error('Invalid blog data received:', data);
-      return null;
-    }
-    
-    return data;
-  } catch (error) {
-    console.error('Error fetching blog:', error);
-    return null;
-  }
-}
 
-// More conservative static params generation
-export async function generateStaticParams() {
-  try {
-    console.log('Generating static params for blogs...');
-    
-    const response = await fetch('https://sweekarme.in/asiabio/api/blogs/', {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; NextJS/13.0)',
-        'Accept': 'application/json',
-      },
-      // Don't cache during build to get fresh data
-      cache: 'no-store',
-    });
-    
-    if (!response.ok) {
-      console.warn('Could not fetch blogs for static generation:', response.status);
-      return []; // Return empty array to prevent build failure
-    }
-    
-    const blogs = await response.json();
-    console.log('Fetched blogs for static generation:', blogs?.length || 0);
-    
-    if (!Array.isArray(blogs)) {
-      console.warn('Blogs data is not an array:', typeof blogs);
-      return [];
-    }
-    
-    // Filter and validate slugs
-    const validParams = blogs
-      .filter(blog => {
-        if (!blog || !blog.slug) return false;
-        
-        // Skip very long slugs that might cause issues
-        if (blog.slug.length > 80) {
-          console.warn('Skipping very long slug:', blog.slug);
-          return false;
-        }
-        
-        // Validate slug format
-        if (!/^[a-z0-9\-]+$/.test(blog.slug)) {
-          console.warn('Skipping invalid slug format:', blog.slug);
-          return false;
-        }
-        
-        return true;
-      })
-      .map(blog => ({
-        slug: blog.slug,
-      }));
-    
-    console.log('Generated static params for', validParams.length, 'blogs');
-    
-    // Limit to first 50 to prevent build timeouts
-    return validParams.slice(0, 50);
-    
-  } catch (error) {
-    console.error('Error in generateStaticParams:', error);
-    return []; // Return empty array to prevent build failure
-  }
-}
-
-export default async function BlogPage({ params }) {
-  try {
-    // Handle params properly
-    const resolvedParams = await params;
-    const slug = resolvedParams?.slug;
-    
-    console.log('BlogPage rendered with slug:', slug);
-    
-    if (!slug) {
-      console.error('No slug provided');
-      notFound();
-    }
-    
-    // Decode the slug in case it's URL encoded
-    const decodedSlug = decodeURIComponent(slug);
-    
-    const blog = await getBlog(decodedSlug);
-    
-    if (!blog) {
-      console.log('Blog not found, showing 404');
-      notFound();
-    }
-    
-    return <BlogDetail blog={blog} />;
-    
-  } catch (error) {
-    console.error('Error in BlogPage component:', error);
-    notFound();
-  }
-}
-
-export async function generateMetadata({ params }) {
-  try {
-    const resolvedParams = await params;
-    const slug = resolvedParams?.slug;
-    
-    if (!slug) {
-      return {
-        title: "Blog Not Found | Asia Biomass Tradelink Pvt. Ltd.",
-      };
-    }
-    
-    const decodedSlug = decodeURIComponent(slug);
-    const blog = await getBlog(decodedSlug);
-    
-    if (!blog) {
-      return {
-        title: "Blog Not Found | Asia Biomass Tradelink Pvt. Ltd.",
-        description: "The requested blog post could not be found.",
-      };
-    }
-
-    // Clean and truncate description
-    const description = blog.content 
-      ? blog.content.replace(/<[^>]*>?/gm, '').substring(0, 160) + '...'
-      : blog.title || 'Read our latest insights on biomass and renewable energy.';
-
-    return {
-      title: `${blog.title} | Asia Biomass Tradelink Pvt. Ltd.`,
-      description,
-      alternates: {
-        canonical: `/blogs/${slug}`,
-      },
-      openGraph: {
-        title: `${blog.title} | Asia Biomass Tradelink Pvt. Ltd.`,
-        description,
-        url: `https://asiabiomass.in/blogs/${slug}`,
-        images: blog.featured_image ? [
+      try {
+        console.log('Fetching blog with slug:', slug);
+        const response = await axios.get(
+          `https://sweekarme.in/asiabio/api/blogs/${slug}/`,
           {
-            url: blog.featured_image.startsWith('http') 
-              ? blog.featured_image 
-              : `https://sweekarme.in${blog.featured_image}`,
-            width: 800,
-            height: 600,
-            alt: blog.title,
-          },
-        ] : [
-          {
-            url: "https://asiabiomass.in/assets/images/logo.png",
-            width: 800,
-            height: 600,
-            alt: "Asia Biomass Tradelink",
+            timeout: 15000, // 15 second timeout
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (compatible; NextJS/14.0)', // Example User-Agent
+            },
           }
-        ],
-        siteName: "Asia Biomass Tradelink Pvt. Ltd.",
-        locale: "en_US",
-        type: "article",
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: `${blog.title} | Asia Biomass Tradelink Pvt. Ltd.`,
-        description,
-        images: blog.featured_image ? [
-          blog.featured_image.startsWith('http') 
-            ? blog.featured_image 
-            : `https://sweekarme.in${blog.featured_image}`
-        ] : ["https://asiabiomass.in/assets/images/logo.png"],
-      },
+        );
+
+        console.log('Blog fetched successfully:', response.data?.title);
+        setBlog(response.data);
+        // Set page title dynamically after fetching the blog
+        document.title = `${response.data.title} | Asia Biomass Tradelink Pvt. Ltd.`;
+
+      } catch (err) {
+        console.error('Error fetching blog:', err);
+        document.title = 'Error Loading Blog | Asia Biomass Tradelink Pvt. Ltd.';
+        
+        if (err.response?.status === 404) {
+          setError('Blog post not found');
+        } else if (err.code === 'ECONNABORTED') {
+          setError('Request timed out. The server is taking too long to respond.');
+        } else {
+          setError('Failed to load the blog post. Please check your connection and try again.');
+        }
+      } finally {
+        setLoading(false);
+      }
     };
-  } catch (error) {
-    console.error('Error generating metadata:', error);
-    return {
-      title: "Blog | Asia Biomass Tradelink Pvt. Ltd.",
-      description: "Read our latest insights on biomass and renewable energy solutions.",
-    };
+
+    fetchBlog();
+  }, [params.slug]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 animate-spin text-primary-600 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Article</h2>
+          <p className="text-gray-600">Please wait while we fetch the content...</p>
+        </div>
+      </div>
+    );
   }
+
+  // Error state
+  if (error || !blog) {
+    const currentSlug = Array.isArray(params.slug) ? params.slug.join('/') : params.slug;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-lg w-full text-center">
+          <div className="mb-8">
+            <div className="mx-auto h-24 w-24 bg-red-100 rounded-full flex items-center justify-center">
+              <svg className="h-12 w-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+          </div>
+
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            {error === 'Blog post not found' ? 'Article Not Found' : 'Something Went Wrong'}
+          </h1>
+          <p className="text-gray-600 mb-6">{error}</p>
+          
+          {currentSlug && (
+            <div className="bg-gray-100 p-4 rounded-lg mb-6">
+              <p className="text-sm text-gray-500">
+                <strong>Requested URL:</strong> /blogs/{currentSlug}
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+            <Link
+              href="/blogs"
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              View All Blogs
+            </Link>
+            
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+
+          {/* Debug info (only in development) */}
+          {process.env.NODE_ENV === 'development' && (
+            <details className="mt-8 text-left bg-gray-50 p-3 rounded">
+              <summary className="font-semibold cursor-pointer text-gray-700">Debug Information</summary>
+              <div className="mt-2 p-4 bg-gray-100 rounded text-xs font-mono break-all">
+                <p><strong>Slug:</strong> {currentSlug}</p>
+                <p><strong>Error Details:</strong> {error}</p>
+                <p><strong>Timestamp:</strong> {new Date().toISOString()}</p>
+              </div>
+            </details>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Success state
+  return <BlogDetail blog={blog} />;
 }
